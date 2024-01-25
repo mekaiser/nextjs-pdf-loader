@@ -1,7 +1,7 @@
 "use client";
 
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
@@ -43,6 +43,20 @@ export default function Sample() {
     setNumPages(nextNumPages);
   }
 
+  useEffect(() => {
+    const preventPDFDownload = (event) => {
+      event.preventDefault();
+    };
+
+    // Attach the event listener to the global window object
+    window.addEventListener("beforeunload", preventPDFDownload);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("beforeunload", preventPDFDownload);
+    };
+  }, []);
+
   return (
     <div className="w-full">
       <div className="flex flex-col items-center ">
@@ -51,7 +65,7 @@ export default function Sample() {
             file={file}
             onLoadSuccess={onDocumentLoadSuccess}
             options={options}
-            onContextMenu={e => e.preventDefault()}
+            onContextMenu={(e) => e.preventDefault()}
             className="pdf-view-container"
           >
             {Array.from(new Array(numPages), (el, index) => (
@@ -61,6 +75,7 @@ export default function Sample() {
                 width={
                   containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth
                 }
+                onRenderSuccess={(e) => e.preventDefault()}
               />
             ))}
           </Document>
