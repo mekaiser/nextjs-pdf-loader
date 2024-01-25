@@ -31,3 +31,24 @@ body {
     text-wrap: balance;
   }
 }
+
+.pdf__container__document .react-pdf__Document {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pdf__container__document .react-pdf__Page {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.pdf__container__document .react-pdf__message {
+  padding: 20px;
+  color: white;
+}
+
+@media print {
+  .pdf__container__document {
+    display: none;
+  }
+}
